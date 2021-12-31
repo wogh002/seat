@@ -1,25 +1,34 @@
-import logo from './logo.svg';
-import './App.css';
-
+import React, { useEffect, useState } from "react";
+import Header from "./components/header/header.jsx";
+import Table from "./components/main/table";
+import { useDispatch, useSelector } from "react-redux";
+import { LOAD_ALL_SEATS_REQUEST } from "./reducers/seat";
 function App() {
+  const dispatch = useDispatch();
+  const [showModal, setShowModal] = useState(false);
+  const {
+    reservationMessage,
+    reservationSeatCancelMessage,
+    useSpecificSeatInfoMessage,
+  } = useSelector(({ seat }) => seat);
+  useEffect(() => {
+    dispatch({ type: LOAD_ALL_SEATS_REQUEST });
+  }, [dispatch]);
+  useEffect(() => {
+    reservationMessage && alert(reservationMessage);
+  }, [reservationMessage]);
+  useEffect(() => {
+    useSpecificSeatInfoMessage && alert(useSpecificSeatInfoMessage);
+  }, [useSpecificSeatInfoMessage]);
+  useEffect(() => {
+    reservationSeatCancelMessage && alert(reservationSeatCancelMessage);
+  }, [reservationSeatCancelMessage]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Header setShowModal={setShowModal} />
+      <Table setShowModal={setShowModal} showModal={showModal} />
+    </>
   );
 }
-
 export default App;
