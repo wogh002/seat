@@ -14,7 +14,7 @@ function App() {
     useSpecificSeatInfoError,
     reservationSeatError,
   } = useSelector(({ seat }) => seat);
-  // 주석 뎁스 will find
+  // TODO : 주석 뎁스 will find
   useEffect(() => {
     dispatch({ type: LOAD_ALL_SEATS_REQUEST });
   }, [dispatch]);

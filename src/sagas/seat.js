@@ -55,7 +55,7 @@ const curSeatSwitchAPI = (data) => {
 // 모든 좌석 요청
 function* loadAllSeats() {
   try {
-    const result = yield call(loadAllSeatsAPI); //await
+    const result = yield call(loadAllSeatsAPI);
     yield put({
       type: LOAD_ALL_SEATS_SUCCESS,
       data: result.data,
