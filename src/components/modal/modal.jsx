@@ -1,84 +1,43 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Article, CloseBtn } from "./modalStyle";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  USE_SPECIFIC_SEAT_REQUEST,
-  RESERVATION_SPECIFIC_SEAT_REQUEST,
-} from "../../reducers/seat";
+import { RESERVATION_SPECIFIC_SEAT_REQUEST } from "../../reducers/seat";
+import { getFormatDate } from "../../service/time";
 
-const times = [
-  { id: 1, startTime: "09:00", endTime: "10:00" },
-  { id: 2, startTime: "10:00", endTime: "11:00" },
-  { id: 3, startTime: "11:00", endTime: "12:00" },
-  { id: 4, startTime: "12:00", endTime: "13:00" },
-  { id: 5, startTime: "13:00", endTime: "14:00" },
-  { id: 6, startTime: "14:00", endTime: "15:00" },
-  { id: 7, startTime: "15:00", endTime: "16:00" },
-  { id: 8, startTime: "16:00", endTime: "17:00" },
-  { id: 9, startTime: "17:00", endTime: "18:00" },
-];
-
+//클릭시 보여지는 modal.
 const Modal = ({ setShowModal }) => {
   const dispatch = useDispatch();
-  const {
-    specificSeatInfo,
-    useSpecificSeatInfo,
-    useSpecificSeatInfoMessage,
-    specificSeatInfoDone,
-    reservationMessage,
-  } = useSelector(({ seat }) => seat);
-
-  // me --->
+  const { specificSeatInfo, specificSeatInfoDone } = useSelector(
+    ({ seat }) => seat
+  );
+  const today = new Date();
+  const h = today.getHours();
+  const m = today.getMinutes();
   const { me } = useSelector(({ user }) => user);
-  console.log(specificSeatInfo);
   const navigate = useNavigate();
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
-  const today = new Date();
-  const getFormatDate = (today) => {
-    const year = today.getFullYear(); //yyyy
-    //why am i using +1 ? -->  getMonth() 의 반환 값이 0~11까지 이기 때문
-    let month = today.getMonth() + 1; //M
-    month = month >= 10 ? month : "0" + month;
-    let day = today.getDate(); //d
-    day = day >= 10 ? day : "0" + day;
-    return year + "" + month + "" + day;
-  };
-  console.log(reservationMessage);
+
+  // 20220101 yyyymmdd 생성
+  getFormatDate(today);
+  const times = [
+    { id: 1, startTime: "09:00", endTime: "10:00" },
+    { id: 2, startTime: "10:00", endTime: "11:00" },
+    { id: 3, startTime: "11:00", endTime: "12:00" },
+    { id: 4, startTime: "12:00", endTime: "13:00" },
+    { id: 5, startTime: "13:00", endTime: "14:00" },
+    { id: 6, startTime: "14:00", endTime: "15:00" },
+    { id: 7, startTime: "15:00", endTime: "16:00" },
+    { id: 8, startTime: "16:00", endTime: "17:00" },
+    { id: 9, startTime: "17:00", endTime: "18:00" },
+  ];
 
   const onHideModal = () => {
     setShowModal((prev) => !prev);
   };
 
-  // 좌석 사용 버튼
-  const onUseSeat = () => {
-    // 좌석 id ->url 파라미터로
-    let user_id;
-    if (startTime) {
-      if (me === "철수") {
-        user_id = 1;
-      } else if (me === "영희") {
-        user_id = 2;
-      } else {
-        user_id = 3;
-      }
-      dispatch({
-        type: USE_SPECIFIC_SEAT_REQUEST,
-        data: {
-          id: specificSeatInfo.id,
-          user_id,
-          start_time: startTime,
-          end_time: endTime,
-        },
-      });
-      navigate("/");
-      setShowModal((prev) => !prev);
-    } else {
-      alert("시간을 선택해주세요");
-    }
-  };
-
+  // modal 안에 yyyymmdd mm:dd 클릭 하였을 경우,
   const saveTime = ({ startTime, endTime }) => {
     setStartTime(getFormatDate(today) + " " + startTime);
     setEndTime(getFormatDate(today) + " " + endTime);
@@ -119,8 +78,8 @@ const Modal = ({ setShowModal }) => {
           key={item.id}
           onClick={() => saveTime(item)}
           style={
-            specificSeatInfoDone && specificSeatInfo.seatStatus === "사용"
-              ? specificSeatInfo.startTime ===
+            specificSeatInfoDone && specificSeatInfo.reservation
+              ? specificSeatInfo.reservation.startTime ===
                 getFormatDate(today) + " " + item.startTime
                 ? { color: "red" }
                 : { color: "#8f8" }
@@ -131,7 +90,6 @@ const Modal = ({ setShowModal }) => {
         </button>
       ))}
       <div>
-        <button onClick={onUseSeat}>좌석 사용</button>
         <button onClick={onReservationSeat}>좌석 예약</button>
       </div>
       <CloseBtn onClick={onHideModal}>닫기</CloseBtn>

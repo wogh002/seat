@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Header from "./components/header/header.jsx";
+import Header from "./components/header/header";
 import Table from "./components/main/table";
 import { useDispatch, useSelector } from "react-redux";
 import { LOAD_ALL_SEATS_REQUEST } from "./reducers/seat";
@@ -8,25 +8,39 @@ function App() {
   const [showModal, setShowModal] = useState(false);
   const {
     reservationMessage,
-    reservationSeatCancelMessage,
     useSpecificSeatInfoMessage,
+    curSeatSwitchMessage,
+    reservationSeatCancelMessage,
+    useSpecificSeatInfoError,
+    reservationSeatError,
   } = useSelector(({ seat }) => seat);
+  // 주석 뎁스 will find
   useEffect(() => {
     dispatch({ type: LOAD_ALL_SEATS_REQUEST });
   }, [dispatch]);
+
   useEffect(() => {
-    reservationMessage && alert(reservationMessage);
+    reservationSeatError && alert(reservationSeatError);
+  }, [reservationSeatError]);
+  useEffect(() => {
+    useSpecificSeatInfoError && alert(useSpecificSeatInfoError);
+  }, [useSpecificSeatInfoError]);
+  useEffect(() => {
+    reservationMessage && alert(reservationMessage.message);
   }, [reservationMessage]);
   useEffect(() => {
-    useSpecificSeatInfoMessage && alert(useSpecificSeatInfoMessage);
+    useSpecificSeatInfoMessage && alert(useSpecificSeatInfoMessage.message);
   }, [useSpecificSeatInfoMessage]);
   useEffect(() => {
-    reservationSeatCancelMessage && alert(reservationSeatCancelMessage);
+    curSeatSwitchMessage && alert(curSeatSwitchMessage.message);
+  }, [curSeatSwitchMessage]);
+  useEffect(() => {
+    reservationSeatCancelMessage && alert(reservationSeatCancelMessage.message);
   }, [reservationSeatCancelMessage]);
 
   return (
     <>
-      <Header setShowModal={setShowModal} />
+      <Header />
       <Table setShowModal={setShowModal} showModal={showModal} />
     </>
   );

@@ -1,4 +1,4 @@
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 export const Article = styled.article`
   h1 {
     margin-right: 30px;
